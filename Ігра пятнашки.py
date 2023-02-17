@@ -14,7 +14,7 @@ c.pack()
 
 
 def get_inv_count():
-    """ Функция считающая количество перемещений """
+    """ Функція, яка вважає кількість переміщень """
     inversions = 0
     inversion_board = board[:]
     inversion_board.remove(EMPTY_SQUARE)
@@ -28,7 +28,7 @@ def get_inv_count():
 
 
 def is_solvable():
-    """ Функция определяющая имеет ли головоломка рещение """
+    """ Функція визначальна чи має головоломка """
     num_inversions = get_inv_count()
     if BOARD_SIZE % 2 != 0:
         return num_inversions % 2 == 0
@@ -41,44 +41,44 @@ def is_solvable():
 
 
 def get_empty_neighbor(index):
-    # получаем индекс пустой клетки в списке
+    # отримуємо індекс порожньої клітини у списку
     empty_index = board.index(EMPTY_SQUARE)
-    # узнаем расстояние от пустой клетки до клетки по которой кликнули
+    # дізнаємося відстань від порожньої клітини до клітини якою клікнули
     abs_value = abs(empty_index - index)
-    # Если пустая клетка над или под клектой на которую кликнули
-    # возвращаем индекс пустой клетки
+    # Якщо порожня клітка над або під клектою, на яку клікнули
+    # повертаємо індекс порожньої клітини
     if abs_value == BOARD_SIZE:
         return empty_index
-    # Если пустая клетка слева или справа
+    # Якщо порожня клітина ліворуч чи праворуч
     elif abs_value == 1:
-        # Проверяем, чтобы блоки были в одном ряду
+        # Перевіряємо, щоб блоки були в одному ряді
         max_index = max(index, empty_index)
         if max_index % BOARD_SIZE != 0:
             return empty_index
-    # Рядом с блоком не было пустого поля
+    # Поруч із блоком не було порожнього поля
     return index
 
 
 def draw_board():
-    # убираем все, что нарисовано на холсте
+    # прибираємо все, що намальовано на полотні
     c.delete('all')
-    # Наша задача сгруппировать пятнашки из списка в квадрат
-    # со сторонами BOARD_SIZE x BOARD_SIZE
-    # i и j будут координатами для каждой отдельной пятнашки
+    # Наше завдання згрупувати цятки зі списку в квадрат
+    # зі сторонами BOARD_SIZE x BOARD_SIZE
+    # i та j будуть координатами для кожної окремої цятки
     for i in range(BOARD_SIZE):
         for j in range(BOARD_SIZE):
-            # получаем значение, которое мы должны будем нарисовать 
-            # на квадрате
+            # отримуємо значення, яке ми маємо намалювати 
+            # на квадраті
             index = str(board[BOARD_SIZE * i + j])
-            # если это не клетка которую мы хотим оставить пустой
+            # якщо це не клітина, яку ми хочемо залишити порожньою
             if index != str(EMPTY_SQUARE):
-                # рисуем квадрат по заданным координатам
+                # малюємо квадрат за заданими координатами
                 c.create_rectangle(j * SQUARE_SIZE, i * SQUARE_SIZE,
                                    j * SQUARE_SIZE + SQUARE_SIZE,
                                    i * SQUARE_SIZE + SQUARE_SIZE,
                                    fill='#43ABC9',
                                    outline='#FFFFFF')
-                # пишем число в центре квадрата
+                # пишемо число у центрі квадрата
                 c.create_text(j * SQUARE_SIZE + SQUARE_SIZE / 2,
                               i * SQUARE_SIZE + SQUARE_SIZE / 2,
                               text=index,
@@ -87,35 +87,35 @@ def draw_board():
 
 
 def show_victory_plate():
-    # Рисуем черный квадрат по центру поля
+    # Малюємо чорний квадрат по центру поля
     c.create_rectangle(SQUARE_SIZE / 5,
                        SQUARE_SIZE * BOARD_SIZE / 2 - 10 * BOARD_SIZE,
                        BOARD_SIZE * SQUARE_SIZE - SQUARE_SIZE / 5,
                        SQUARE_SIZE * BOARD_SIZE / 2 + 10 * BOARD_SIZE,
                        fill='#000000',
                        outline='#FFFFFF')
-    # Пишем красным текст Победа
+    # Пишемо червоним текст Перемога
     c.create_text(SQUARE_SIZE * BOARD_SIZE / 2, SQUARE_SIZE * BOARD_SIZE / 1.9,
                   text="ПОБЕДА!", font="Helvetica {} bold".format(int(10 * BOARD_SIZE)), fill='#DC143C')
 
 
 def click(event):
-    # Получаем координаты клика
+    # Отримуємо координати кліка
     x, y = event.x, event.y
-    # Конвертируем координаты из пикселей в клеточки
+    # Конвертуємо координати з пікселів у клітини
     x = x // SQUARE_SIZE
     y = y // SQUARE_SIZE
-    # Получаем индекс в списке объекта по которому мы нажали
+    # Отримуємо індекс у списку об'єкта за яким ми натиснули
     board_index = x + (y * BOARD_SIZE)
-    # Получаем индекс пустой клетки в списке. Эту функцию мы напишем позже
+    # Отримуємо індекс порожньої клітки у списку. Цю функцію ми напишемо пізніше
     empty_index = get_empty_neighbor(board_index)
-    # Меняем местами пустую клетку и клетку, по которой кликнули
+    # Змінюємо місцями порожню клітку і клітку, якою клікнули
     board[board_index], board[empty_index] = board[empty_index], board[board_index]
-    # Перерисовываем игровое поле 
+    # Перемальовуємо ігрове поле
     draw_board()
-    # Если текущее состояние доски соответствует правильному - рисуем сообщение о победе
+    # Якщо поточний стан дошки відповідає правильному – малюємо повідомлення про перемогу
     if board == correct_board:
-        # Эту функцию мы добавим позже
+        # Цю функцію ми додамо пізніше
         show_victory_plate()
 
 
